@@ -62,23 +62,38 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
+            // Set up PDF Title
+            doc.setFontSize(16);
+            doc.text('Nomination Form Details', 105, 20, { align: 'center' });
+
             // Get form values
             const form = document.getElementById('nominationForm');
             const formData = new FormData(form);
-            
-            // Add content to PDF
+
+            // Define starting position for the content
+            let yOffset = 30;
             doc.setFontSize(12);
-            doc.text('Nomination Form Details', 10, 10);
             
-            let yOffset = 20;
+            // Loop through form fields and add them to the PDF
             formData.forEach((value, key) => {
-                doc.text(`${key.replace(/_/g, ' ')}: ${value}`, 10, yOffset);
+                // Format the key into a readable label
+                const label = key.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
+                
+                // Add form field details to PDF
+                doc.text(`${label}: ${value}`, 20, yOffset);
                 yOffset += 10;
+
+                // Add page break if content exceeds the page height
+                if (yOffset > 280) {
+                    doc.addPage();
+                    yOffset = 20; // Reset yOffset for new page
+                }
             });
 
-            // Save PDF
+            // Save the generated PDF
             doc.save('Nomination_Form.pdf');
         }
     </script>
 </body>
 </html>
+
