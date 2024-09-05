@@ -4,61 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nomination Form</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-        }
-        form {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        input[type="text"],
-        input[type="email"],
-        input[type="number"],
-        input[type="date"],
-        input[type="tel"],
-        textarea,
-        input[type="file"] {
-            width: calc(100% - 20px);
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .radio-group {
-            margin-bottom: 15px;
-        }
-        .radio-group label {
-            display: inline-block;
-            margin-right: 10px;
-        }
-        .submit-button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-        }
-        .submit-button:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Include jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <center><h1>NOMINATION FORM</h1></center>
-    <form action="submit_form.php" method="POST" enctype="multipart/form-data">
+    <form id="nominationForm" onsubmit="generatePDF(event)">
         <label for="nominee_name">Name of Nominee:</label>
         <input type="text" id="nominee_name" name="nominee_name" required>
 
@@ -91,9 +43,6 @@
         <label for="date">Date:</label>
         <input type="date" id="date" name="date" required>
 
-        <label for="signature">Signature (Upload):</label>
-        <input type="file" id="signature" name="signature" accept="image/*" required>
-
         <label for="account_number">Account Number:</label>
         <input type="text" id="account_number" name="account_number" required>
 
@@ -103,14 +52,33 @@
         <label for="witness_address_1">Witness Address 1:</label>
         <textarea id="witness_address_1" name="witness_address_1" rows="2"></textarea>
 
-        <label for="witness_signature_1">Witness Signature (Upload):</label>
-        <input type="file" id="witness_signature_1" name="witness_signature_1" accept="image/*">
-
-	 <label for="witness_signature_1">Witness Signature (Upload):</label>
-        <input type="file" id="witness_signature_1" name="witness_signature_1" accept="image/*">
-
-
         <button type="submit" class="submit-button">Submit</button>
     </form>
+
+    <script>
+        async function generatePDF(event) {
+            event.preventDefault(); // Prevent form submission
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Get form values
+            const form = document.getElementById('nominationForm');
+            const formData = new FormData(form);
+            
+            // Add content to PDF
+            doc.setFontSize(12);
+            doc.text('Nomination Form Details', 10, 10);
+            
+            let yOffset = 20;
+            formData.forEach((value, key) => {
+                doc.text(`${key.replace(/_/g, ' ')}: ${value}`, 10, yOffset);
+                yOffset += 10;
+            });
+
+            // Save PDF
+            doc.save('Nomination_Form.pdf');
+        }
+    </script>
 </body>
 </html>
