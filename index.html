@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,14 +11,8 @@
 <body>
     <center><h1>NOMINATION FORM</h1></center>
     <form id="nominationForm" onsubmit="generatePDF(event)">
-        <label for="nominee_name 1">Name of Nominee 1:</label>
-        <input type="text" id="nominee_name 1" name="nominee_name 1" required>
-
-         <label for="nominee_name 2">Name of Nominee 2:</label>
-        <input type="text" id="nominee_name 2" name="nominee_name 2" required>
-
-         <label for="nominee_name 3">Name of Nominee 3:</label>
-        <input type="text" id="nominee_name 3" name="nominee_name 3" required>
+        <label for="nominee_name">Name of Nominee:</label>
+        <input type="text" id="nominee_name" name="nominee_name" required>
 
         <label>Marital Status:</label>
         <div class="radio-group">
@@ -59,49 +52,65 @@
         <label for="witness_address_1">Witness Address 1:</label>
         <textarea id="witness_address_1" name="witness_address_1" rows="2"></textarea>
 
-         <label for="witness_name_1">Witness Name 2:</label>
-        <input type="text" id="witness_name_1" name="witness_name_1" required>
-
-        <label for="witness_address_1">Witness Address 2:</label>
-        <textarea id="witness_address_1" name="witness_address_1" rows="2"></textarea>
-
         <button type="submit" class="submit-button">Submit</button>
     </form>
 
     <script>
         async function generatePDF(event) {
             event.preventDefault(); // Prevent form submission
-            
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
 
-            // Set up PDF Title
-            doc.setFontSize(20);
-            doc.text('NOMINATION FORM DETAILS', 105, 20, { align: 'center' });
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+
+            // Draw Border
+            doc.setLineWidth(1);
+            doc.rect(10, 10, 190, 277); // x, y, width, height
+
+            // Add Title Heading
+            doc.setFontSize(18);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Nomination Form Details', 105, 20, { align: 'center' });
+
+            // Draw Line Under Title
+            doc.setDrawColor(0, 0, 0);
+            doc.line(20, 25, 190, 25);
 
             // Get form values
             const form = document.getElementById('nominationForm');
             const formData = new FormData(form);
 
             // Define starting position for the content
-            let yOffset = 30;
-            doc.setFontSize(16);
-            
+            let yOffset = 40;
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'normal');
+
             // Loop through form fields and add them to the PDF
             formData.forEach((value, key) => {
                 // Format the key into a readable label
                 const label = key.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
-                
-                // Add form field details to PDF
-                doc.text(`${label}: ${value}`, 20, yOffset);
+
+                // Add the label in bold
+                doc.setFont('helvetica', 'bold');
+                doc.text(`${label}:`, 20, yOffset);
+
+                // Add the value in normal font
+                doc.setFont('helvetica', 'normal');
+                doc.text(`${value}`, 70, yOffset);
+
                 yOffset += 10;
 
-                // Add page break if content exceeds the page height
-                if (yOffset > 280) {
+                // Add page break if content exceeds page height
+                if (yOffset > 270) {
                     doc.addPage();
-                    yOffset = 20; // Reset yOffset for new page
+                    doc.rect(10, 10, 190, 277); // Redraw border on new page
+                    yOffset = 20;
                 }
             });
+
+            // Add Footer
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'italic');
+            doc.text('Generated using jsPDF', 105, 290, { align: 'center' });
 
             // Save the generated PDF
             doc.save('Nomination_Form.pdf');
@@ -109,4 +118,5 @@
     </script>
 </body>
 </html>
+
 
