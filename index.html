@@ -12,14 +12,14 @@
 <body>
     <center><h1>NOMINATION FORM</h1></center>
     <form id="nominationForm" onsubmit="generatePDF(event)">
-        <label for="nominee_name">Name of Nominee 1:</label>
-        <input type="text" id="nominee_name" name="nominee_name" required>
+        <label for="nominee_name 1">Name of Nominee 1:</label>
+        <input type="text" id="nominee_name 1" name="nominee_name 1" required>
 
-         <label for="nominee_name">Name of Nominee 2:</label>
-        <input type="text" id="nominee_name" name="nominee_name" required>
+         <label for="nominee_name 2">Name of Nominee 2:</label>
+        <input type="text" id="nominee_name 2" name="nominee_name 2" required>
 
-         <label for="nominee_name">Name of Nominee 3:</label>
-        <input type="text" id="nominee_name" name="nominee_name" required>
+         <label for="nominee_name 3">Name of Nominee 3:</label>
+        <input type="text" id="nominee_name 3" name="nominee_name 3" required>
 
         <label>Marital Status:</label>
         <div class="radio-group">
@@ -77,7 +77,7 @@
 
             // Set up PDF Title
             doc.setFontSize(20);
-            doc.text('Nomination Form Details', 105, 20, { align: 'center' });
+            doc.text('NOMINATION FORM DETAILS', 105, 20, { align: 'center' });
 
             // Get form values
             const form = document.getElementById('nominationForm');
