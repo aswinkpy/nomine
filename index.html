@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nomination Form</title>
-    <link rel="stylesheet" href="styles.css">
     <!-- Include jsPDF library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
@@ -67,39 +67,43 @@
             doc.rect(10, 10, 190, 277); // x, y, width, height
 
             // Add Title Heading
-            doc.setFontSize(18);
+            doc.setFontSize(14);
             doc.setFont('helvetica', 'bold');
             doc.text('Nomination Form Details', 105, 20, { align: 'center' });
 
-            // Draw Line Under Title
-            doc.setDrawColor(0, 0, 0);
-            doc.line(20, 25, 190, 25);
-
-            // Get form values
-            const form = document.getElementById('nominationForm');
-            const formData = new FormData(form);
-
-            // Define starting position for the content
-            let yOffset = 40;
+            // Add Initial Declaration Text
+            const nomineeName = document.getElementById('nominee_name').value;
+            const maritalStatus = document.querySelector('input[name="marital_status"]:checked').value;
+            const declaration = `I, ${nomineeName} hereby nominate the person(s) mentioned below to receive the amount that may stand to my credit in the Fund in the event of my death before that amount has become payable or having become payable, has not been paid. I also declare that my marital status is ${maritalStatus}.`;
             doc.setFontSize(12);
             doc.setFont('helvetica', 'normal');
+            doc.text(declaration, 20, 40, { maxWidth: 170, align: 'justify' });
 
-            // Loop through form fields and add them to the PDF
+            // Table Headers
+            doc.setFont('helvetica', 'bold');
+            doc.text('Name, full permanent address and Aadhaar no. of nominees', 20, 70);
+            doc.text('Relation with the subscriber', 20, 80);
+            doc.text('Age', 20, 90);
+            doc.text('Share payable to each in percentage', 20, 100);
+            doc.text('Contingencies on the happening of which nomination shall become invalid', 20, 110);
+            doc.text('Name, address, Aadhaar no., relationship and age of the person to whom the right of the nominee shall pass in the event of his predeceasing the subscriber', 20, 120);
+            doc.text('Name, address, and Aadhaar No. of the person to whom share is to be paid on behalf of the minor', 20, 130);
+
+            // Form Details (dynamic content)
+            let yOffset = 140; // Starting Y offset for the details
+
+            const formData = new FormData(document.getElementById('nominationForm'));
+
             formData.forEach((value, key) => {
                 // Format the key into a readable label
                 const label = key.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
 
-                // Add the label in bold
-                doc.setFont('helvetica', 'bold');
-                doc.text(`${label}:`, 20, yOffset);
-
-                // Add the value in normal font
+                // Add the label and value
                 doc.setFont('helvetica', 'normal');
-                doc.text(`${value}`, 70, yOffset);
-
+                doc.text(`${label}: ${value}`, 20, yOffset, { maxWidth: 170 });
                 yOffset += 10;
 
-                // Add page break if content exceeds page height
+                // Handle page breaks if the content exceeds page height
                 if (yOffset > 270) {
                     doc.addPage();
                     doc.rect(10, 10, 190, 277); // Redraw border on new page
@@ -107,10 +111,32 @@
                 }
             });
 
-            // Add Footer
+            // Add Place, Date, and Signature Lines
+            doc.text(`Place: ${formData.get('place') || ''}`, 20, yOffset);
+            yOffset += 10;
+            doc.text(`Date: ${formData.get('date') || ''}`, 20, yOffset);
+            yOffset += 20;
+            doc.text('Name, designation, office address, PEN and signature of the subscriber:', 20, yOffset);
+            yOffset += 10;
+            doc.text(`Account No: ${formData.get('account_number') || ''}`, 20, yOffset);
+
+            // Footer for Witnesses
+            yOffset += 20;
+            doc.text('Witnesses:', 20, yOffset);
+            yOffset += 10;
+            doc.text(`1. ${formData.get('witness_name_1') || ''}`, 20, yOffset);
+            yOffset += 10;
+            doc.text(`2.`, 20, yOffset + 10); // Placeholder for Witness 2 if required
+
+            // Add Instructions
+            yOffset += 30;
             doc.setFontSize(10);
             doc.setFont('helvetica', 'italic');
-            doc.text('Generated using jsPDF', 105, 290, { align: 'center' });
+            doc.text('Note: The nomination made by a subscriber who was not married at the time of filing nomination shall become invalid on getting married.', 20, yOffset, { maxWidth: 170 });
+            yOffset += 10;
+            doc.text('Instructions:', 20, yOffset);
+            yOffset += 5;
+            doc.text('Column 1 - A subscriber can nominate more than one person. If he/she has a family as defined in General Provident Fund (K) Rules, the nomination shall not be in favour of any person who is not a member of the family.', 20, yOffset, { maxWidth: 170 });
 
             // Save the generated PDF
             doc.save('Nomination_Form.pdf');
