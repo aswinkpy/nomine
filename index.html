@@ -12,7 +12,13 @@
 <body>
     <center><h1>NOMINATION FORM</h1></center>
     <form id="nominationForm" onsubmit="generatePDF(event)">
-        <label for="nominee_name">Name of Nominee:</label>
+        <label for="nominee_name">Name of Nominee 1:</label>
+        <input type="text" id="nominee_name" name="nominee_name" required>
+
+         <label for="nominee_name">Name of Nominee 2:</label>
+        <input type="text" id="nominee_name" name="nominee_name" required>
+
+         <label for="nominee_name">Name of Nominee 3:</label>
         <input type="text" id="nominee_name" name="nominee_name" required>
 
         <label>Marital Status:</label>
@@ -53,6 +59,12 @@
         <label for="witness_address_1">Witness Address 1:</label>
         <textarea id="witness_address_1" name="witness_address_1" rows="2"></textarea>
 
+         <label for="witness_name_1">Witness Name 2:</label>
+        <input type="text" id="witness_name_1" name="witness_name_1" required>
+
+        <label for="witness_address_1">Witness Address 2:</label>
+        <textarea id="witness_address_1" name="witness_address_1" rows="2"></textarea>
+
         <button type="submit" class="submit-button">Submit</button>
     </form>
 
@@ -64,7 +76,7 @@
             const doc = new jsPDF();
 
             // Set up PDF Title
-            doc.setFontSize(16);
+            doc.setFontSize(20);
             doc.text('Nomination Form Details', 105, 20, { align: 'center' });
 
             // Get form values
@@ -73,7 +85,7 @@
 
             // Define starting position for the content
             let yOffset = 30;
-            doc.setFontSize(12);
+            doc.setFontSize(16);
             
             // Loop through form fields and add them to the PDF
             formData.forEach((value, key) => {
